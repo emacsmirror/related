@@ -39,14 +39,14 @@
 ;;  (related-mode)
 ;;
 ;; Then use "C-t" to switch to next related buffer, and "C-S-t" to
-;; come back. If you are not happy with those key bindings, you might
+;; come back.  If you are not happy with those key bindings, you might
 ;; want to try something like this :
 ;;
 ;;  (global-set-key (kbd "C-x <up>") 'related-switch-forward)
 ;;  (global-set-key (kbd "C-x <down>") 'related-switch-backward)
 ;;
 ;; Related derive from each buffer an hopefully meaningful "base name"
-;; and buffers with same "base name" forms a group. Related helps you
+;; and buffers with same "base name" forms a group.  Related helps you
 ;; to navigate those groups.
 ;;
 ;; For example, buffers visiting the following files :
@@ -55,7 +55,7 @@
 ;;  /path/to/source/foo.c
 ;;  /path/to/doc/foo.org
 ;;
-;; Would be grouped together (their names reduce to "foo"). Supposing
+;; Would be grouped together (their names reduce to "foo").  Supposing
 ;; you have dozens of opened buffers, and are working in "foo.h",
 ;; Related helps you to cycle across "foo" buffers :
 ;;
@@ -86,8 +86,8 @@
 (require 'cl-lib)
 
 (defun related-buf-path-or-name (buf)
-  "Returns the file path associated with buffer BUF. If BUF does not
-have a path, its name is returned instead"
+  "Return the file path associated with buffer BUF.
+If BUF does not have a path, its name is returned instead"
   ;; Do not really care about paths. Unique strings are enough.
   ;; Returning name allows buffers such as "*scratch*" to be part of
   ;; the game. Later we do not distinguish between path or name, and
@@ -125,8 +125,7 @@ Given \"*scratch*\" returns \"scratch\"."
 	(downcase root)))
 
 (defun related-sorted-buffers (buf)
-  "Returns an ordered list of buffers with a name similar to the one
-of BUF."
+  "Return an ordered list of buffers with name similar to BUF."
   (let ((digest (related-path-or-name-digest
 				 (related-buf-path-or-name buf))))
 	(sort
@@ -142,13 +141,13 @@ of BUF."
   (append l (list (car l))))
 
 (defun related-buffer-switch-list(buf &optional rev)
-  "Returns a \"circular\" list of buffers related to BUF. If REV is t
+  "Return a \"circular\" list of buffers related to BUF. If REV is t
 the list is reversed."
-  (flet ((dir-f (l) (if rev (reverse l) l)))
+  (cl-flet ((dir-f (l) (if rev (reverse l) l)))
 	(related-circular-list (dir-f (related-sorted-buffers buf)))))
 
 (defun related-pop-until-buf-rec (buf buffers)
-  "Pops BUFFERS \"switch list\" until BUF becomes the head."
+  "Pop until BUF becomes the head of BUFFERS \"switch list\"."
   (if (equal 0 (length buffers))
 	  nil
 	(let ((next (pop buffers)))
@@ -158,7 +157,7 @@ the list is reversed."
 
 (defun related-switch-next (&optional rev)
   "Switch to the next related buffer (or previous if REV is t)."
-  (let ()
+  (let (buf buffers next)
 	(setq buf (current-buffer))
 	(setq buffers (related-buffer-switch-list buf rev))
 	(setq next (car (related-pop-until-buf-rec buf buffers)))
