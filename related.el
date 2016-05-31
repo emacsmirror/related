@@ -6,6 +6,7 @@
 ;; Description: Switch back and forth between similarly named buffers.
 ;; Created: Fri May 13 2016
 ;; Version: 0.0.1
+;; Package-Requires: ((cl-lib "0.5"))
 ;; Keywords: file, buffer, switch, selection, matching, convenience
 ;; URL: https://bitbucket.org/lyude/related/raw/master/related.el
 
@@ -38,12 +39,12 @@
 ;;  (require 'related)
 ;;  (related-mode)
 ;;
-;; Then use "C-t" to switch to next related buffer, and "C-S-t" to
-;; come back.  If you are not happy with those key bindings, you might
-;; want to try something like this :
+;; Then use "C-x <up>" to switch to next related buffer, and "C-x
+;; <down>" to come back.  If you are not happy with those key
+;; bindings, you might want to try something like this :
 ;;
-;;  (global-set-key (kbd "C-x <up>") 'related-switch-forward)
-;;  (global-set-key (kbd "C-x <down>") 'related-switch-backward)
+;;  (global-set-key (kbd "<your key seq>") 'related-switch-forward)
+;;  (global-set-key (kbd "<your key seq>") 'related-switch-backward)
 ;;
 ;; Related derive from each buffer an hopefully meaningful "base name"
 ;; and buffers with same "base name" forms a group.  Related helps you
@@ -116,9 +117,8 @@ If BUF does not have a path, its name is returned instead"
 
 Given \"/path/to/Foo2.txt.old\" returns \"foo\".
 Given \"*scratch*\" returns \"scratch\"."
-  (let (base root)
-	(setq base (file-name-nondirectory path))
-	(setq root (file-name-sans-extension base))
+  (let* ((base (file-name-nondirectory path))
+         (root (file-name-sans-extension base)))
 	(while (not (equal root (file-name-sans-extension root)))
 	  (setq root (file-name-sans-extension root)))
 	(setq root (replace-regexp-in-string "[^[:alpha:]]" "" root))
@@ -157,10 +157,9 @@ the list is reversed."
 
 (defun related-switch-next (&optional rev)
   "Switch to the next related buffer (or previous if REV is t)."
-  (let (buf buffers next)
-	(setq buf (current-buffer))
-	(setq buffers (related-buffer-switch-list buf rev))
-	(setq next (car (related-pop-until-buf-rec buf buffers)))
+  (let* ((buf (current-buffer))
+         (buffers (related-buffer-switch-list buf rev))
+         (next (car (related-pop-until-buf-rec buf buffers))))
 	(if next (switch-to-buffer next))))
 
 (defun related-switch-forward ()
@@ -179,9 +178,9 @@ the list is reversed."
   :global t
   :keymap (let ((map (make-sparse-keymap)))
 		(define-key map
-		  (kbd "C-t") 'related-switch-forward)
+		  (kbd "C-x <up>") 'related-switch-forward)
 		(define-key map
-		  (kbd "C-S-t") 'related-switch-backward)
+		  (kbd "C-x <down>") 'related-switch-backward)
 		map))
 
 (provide 'related)
