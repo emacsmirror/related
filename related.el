@@ -46,6 +46,9 @@
 ;;  (global-set-key (kbd "<your key seq>") 'related-switch-forward)
 ;;  (global-set-key (kbd "<your key seq>") 'related-switch-backward)
 ;;
+;; You might also want to try related-switch-buffer, which prompt you
+;; for the next related buffer to go to (no default key binding here).
+;;
 ;; Related derive from each buffer an hopefully meaningful "base name"
 ;; and buffers with same "base name" forms a group.  Related helps you
 ;; to navigate those groups.
@@ -135,6 +138,15 @@ Given \"*scratch*\" returns \"scratch\"."
 					   (related-buf-path-or-name b))))
 	  (buffer-list))
 	 'related-buf<)))
+
+(defun related-switch-buffer ()
+  "Prompt user for some related buffer and switch to it."
+  (interactive)
+  (let* ((buffers (mapcar (lambda (b) (list (buffer-name b) b))
+						  (related-sorted-buffers (current-buffer))))
+		 (name (completing-read "Switch to related buffer: " buffers))
+		 (buf (cadr (assoc name buffers))))
+	(if buf (switch-to-buffer buf))))
 
 (defun related-circular-list (l)
   "Append the head of L at the end of L."
