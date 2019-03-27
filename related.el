@@ -1,6 +1,6 @@
 ;;; related.el --- Switch back and forth between similarly named buffers.
 
-;; Copyright © 2016 Julien Montmartin
+;; Copyright © 2019 Julien Montmartin
 
 ;; Author: Julien Montmartin
 ;; Description: Switch back and forth between similarly named buffers.
@@ -8,8 +8,7 @@
 ;; Version: 0.0.1
 ;; Package-Requires: ((cl-lib "0.5"))
 ;; Keywords: file, buffer, switch, selection, matching, convenience
-;; URL: https://bitbucket.org/lyude/related/raw/master/related.el
-
+;; URL: https://github.com/julien-montmartin/related
 ;; This file is NOT part of GNU Emacs.
 
 ;;; License
